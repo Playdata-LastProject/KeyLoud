@@ -11,6 +11,7 @@
 코드를 바꿔 더 빠르게 결과를 얻을 수 있을 것으로 예상.
 
 
+
 ### 키워드 추출(완료)
 : Google api의 vertex ai을 이용하여 text dat를 input시 text의 주요키워드 5개를 return받는 기능
 
