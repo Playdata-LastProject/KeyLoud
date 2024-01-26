@@ -3,6 +3,7 @@ const form = document.getElementById("form");
 form.addEventListener("submit", submitForm);
 
 function submitForm(e) {
+    console.log("test2");
     e.preventDefault();
     const name = document.getElementById("name");
     const files = document.getElementById("files");
