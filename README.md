@@ -18,3 +18,8 @@
 사용 모델은 gemini모델을 사용함. 해당 모델은 일반 키워드 추출 모델과 달리 대화형 모델로써,
 
 입력시 원하는 조건을 다양하게 설정이 가능하며 키워드 추출 성능이 매우 높음
+
+
+
+### docker mongoDB띄우기
+: docker-compose.yml이 있는 keyloud폴더에서 docker-compose up -d 커맨드 입력하면 mongodb실행됨
