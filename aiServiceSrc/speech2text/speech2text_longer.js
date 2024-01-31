@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 //const ffmpeg = require("fluent-ffmpeg");
 //ffmpeg.setFfmpegPath(ffmpegPath);
@@ -6,6 +7,10 @@
 //어플리케이션 내에서 해당 내장된 ffmpeg을 사용하는 방법
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
+=======
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+const ffmpeg = require("fluent-ffmpeg");
+>>>>>>> c3c9cf4997c19cd86824b94f49d18b57bd9dcc0d
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 const speech = require("@google-cloud/speech");

@@ -45,8 +45,11 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+<<<<<<< HEAD
 aiServiceSrc/dbTest/uploads/
 #aiServiceSrc/dbTest/node_modules/
+=======
+>>>>>>> c3c9cf4997c19cd86824b94f49d18b57bd9dcc0d
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -162,6 +165,7 @@ dist
 .history
 .ionide
 
+<<<<<<< HEAD
 ### react ###
 .DS_*
 *.log
@@ -180,3 +184,6 @@ sketch
 
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node
+=======
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node
+>>>>>>> c3c9cf4997c19cd86824b94f49d18b57bd9dcc0d
