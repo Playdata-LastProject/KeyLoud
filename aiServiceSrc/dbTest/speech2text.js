@@ -87,8 +87,9 @@ async function speech2text(audioPath) {
   };
 
   // Transcribe each chunk and concatenate results
-  const result = await transcribeAndConcatenate(audioChunks, config);
-  console.log("Transcription:", result);
+  return await transcribeAndConcatenate(audioChunks, config);
+  //console.log("Transcription:", result);
+  
 }
 
 module.exports = speech2text;
