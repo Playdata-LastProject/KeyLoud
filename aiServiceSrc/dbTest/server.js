@@ -47,6 +47,8 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
         res.json({ message: "File uploaded successfully" });
         console.log("File uploaded successfully");
 
+        fs.unlinkSync(`./uploads/${req.file.originalname}`);
+
         /*
         // 파일 읽기 및 MongoDB에서 조회
         const document = await conn.db.collection("test").findOne({ filename: fileDetails.filename });
