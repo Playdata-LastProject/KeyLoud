@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const speech2text = require("./speech2text");
 const keywords = require("./keywords");
+const summary = require("./summary");
+const synonyms = require("./synonyms");
 
 const app = express();
 
@@ -22,7 +24,9 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
         }
 
         //const text_result = speech2text(); ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
+        //const summary_result = summary();
         //const keywords_result = keywords(text_result);
+        //const synonyms_result = synonyms(keywords_result);
 
         // 파일이 업로드된 후의 처리
         const fileDetails = {
@@ -36,6 +40,7 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
         // MongoDB에 파일 정보 저장
         await conn.db.collection("test").insertOne(fileDetails);
         res.json({ message: "File uploaded successfully" });
+        console.log("File uploaded successfully");
 
         /*
         // 파일 읽기 및 MongoDB에서 조회
