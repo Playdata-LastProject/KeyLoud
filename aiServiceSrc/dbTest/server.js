@@ -28,7 +28,7 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
 
     const copy_path = "./uploads/" + req.file.originalname;
 
-    const text_result = speech2text(copy_path); // ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
+    const text_result = speech2text(copy_path, "컴퓨터"); // ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
     //const summary_result = summary();
     //const keywords_result = keywords(text_result);
     //const synonyms_result = synonyms(keywords_result);

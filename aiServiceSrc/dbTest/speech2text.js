@@ -40,6 +40,46 @@ function splitAudio(audioBuffer, chunkSize, sampleRate) {
   return chunks;
 }
 
+async function timeStamps(chunks, config) {
+  const wordsWithTimestamps = [];
+
+  for (const chunk of chunks) {
+    const audioBytes = chunk.toString("base64");
+
+    const audio = {
+      content: audioBytes,
+    };
+
+    const request = {
+      audio: audio,
+      config: config,
+    };
+
+    try {
+      const [response] = await client.recognize(request);
+
+      for (const result of response.results) {
+        for (const wordInfo of result.alternatives[0].words) {
+          const startTime =
+            wordInfo.startTime.seconds + wordInfo.startTime.nanos / 1e9;
+          //const endTime =
+          //  wordInfo.endTime.seconds + wordInfo.endTime.nanos / 1e9;
+          const word = {
+            word: wordInfo.word,
+            startTime: Math.floor(startTime / 10),
+            // endTime: endTime / 10,
+          };
+          wordsWithTimestamps.push(word);
+        }
+      }
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  }
+
+  return wordsWithTimestamps;
+}
+
 async function transcribeAndConcatenate(chunks, config) {
   const transcriptions = [];
 
@@ -69,7 +109,7 @@ async function transcribeAndConcatenate(chunks, config) {
   return transcriptions.join(" ");
 }
 
-async function speech2text(audioPath) {
+async function speech2text(audioPath, targetWord) {
   const linear16FilePath = await convertToLinear16(audioPath);
 
   // Read the linear16 audio file
@@ -81,10 +121,30 @@ async function speech2text(audioPath) {
   const audioChunks = splitAudio(audioFile, 60, sampleRate);
 
   const config = {
+    enableWordTimeOffsets: true,
     encoding: "LINEAR16",
     sampleRateHertz: sampleRate,
     languageCode: "ko-KR",
   };
+
+  // 각 청크를 전사하고 결과를 연결
+  const wordsWithTimestamps = await timeStamps(audioChunks, config);
+
+  // 특정 단어의 타임스탬프 찾아서 출력
+  const targetWordTimestamps = wordsWithTimestamps.filter(
+    (word) => word.word.toLowerCase() === targetWord.toLowerCase()
+  );
+
+  if (targetWordTimestamps.length > 0) {
+    console.log(`"${targetWord}"의 타임스탬프:`);
+    for (const timestamp of targetWordTimestamps) {
+      console.log(
+        `시작 시간: ${timestamp.startTime}` //, 종료 시간: ${timestamp.endTime}`
+      );
+    }
+  } else {
+    console.log(`오디오에서 "${targetWord}"을(를) 찾을 수 없습니다.`);
+  }
 
   // Transcribe each chunk and concatenate results
   const result = await transcribeAndConcatenate(audioChunks, config);
