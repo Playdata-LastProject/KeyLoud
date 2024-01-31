@@ -28,19 +28,19 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
 
     const copy_path = "./uploads/" + req.file.originalname;
 
-    const text_result = speech2text(copy_path); // ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
-    //const summary_result = summary();
-    //const keywords_result = keywords(text_result);
-    //const synonyms_result = synonyms(keywords_result);
+    const text_result = await speech2text(copy_path); // ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
+    const summary_result = await summary(text_result);
+    const keywords_result = await keywords(text_result);
+    const synonyms_result = await synonyms(keywords_result);
 
     // 파일이 업로드된 후의 처리
     const fileDetails = {
       filename: req.file.originalname,
       content: req.file.buffer, // 바이너리 데이터로 저장
-      //scripts: text_result,
-      //summary: summary_result,
-      //keywords: keywords_result,
-      //synonyms: synonyms_result,
+      scripts: text_result,
+      summary: summary_result,
+      keywords: keywords_result,
+      synonyms: synonyms_result,
       // 기타 필요한 파일 정보들 추가 -> erd보고 추가
     };
 
