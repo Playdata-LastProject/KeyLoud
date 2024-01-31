@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const fs = require("fs");
 const speech2text = require("./speech2text");
 const keywords = require("./keywords");
 const summary = require("./summary");
@@ -22,6 +23,8 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ message: "No file uploaded" });
         }
+
+        fs.writeFileSync(`./uploads/${req.file.originalname}`, req.file.buffer);
 
         //const text_result = speech2text(); ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
         //const summary_result = summary();
