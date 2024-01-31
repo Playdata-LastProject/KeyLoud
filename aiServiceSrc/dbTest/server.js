@@ -36,7 +36,9 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
             filename: req.file.originalname,
             content: req.file.buffer, // 바이너리 데이터로 저장
             //scripts: text_result,
-            //summary: keywords_result,
+            //summary: summary_result,
+            //keywords: keywords_result,
+            //synonyms: synonyms_result,
             // 기타 필요한 파일 정보들 추가 -> erd보고 추가
         };
 
