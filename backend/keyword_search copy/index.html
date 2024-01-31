@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Example</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .searchbox {
+      width: 300px;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .item {
+      display: flex;
+      flex-direction: column; /* 수정된 부분: 각 item을 세로로 배치하기 위해 */
+      align-items: center;
+      margin: 5px;
+    }
+
+    .item span {
+      margin-top: 5px; /* 수정된 부분: 각 문장 사이의 간격을 주기 위해 */
+    }
+
+    .highlight {
+      background-color: yellow;
+      font-weight: bold; /* 검색어 강조를 위해 폰트 굵기 추가 */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="searchbox">
+    <div class="header">
+      <h1>Search</h1>
+      <input oninput="filter()" type="text" id="value" placeholder="Type to Search">
+    </div>
+
+    <div class="container">
+      <div class="item">
+        <span class="name">나는 오늘 아침을 먹었습니다. 매우 맛있었습니다.</span>
+      </div>
+
+      <div class="item">
+        <span class="name">나는 오늘 점심을 먹었습니다. 매우 푸짐했습니다.</span>
+      </div>
+
+      <div class="item">
+        <span class="name">나는 어제 저녁을 먹었습니다. 너무 많이 먹어서 배가 부르네요.</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    function filter() {
+      var value, name, item, i;
+
+      value = document.getElementById("value").value.toUpperCase();
+      item = document.getElementsByClassName("item");
+
+      for (i = 0; i < item.length; i++) {
+        name = item[i].getElementsByClassName("name")[0];
+
+        // 각 문자열을 문장 단위로 분리
+        var sentences = name.dataset.originalText.split('.');
+
+        // 검색어가 포함된 문장들을 저장할 변수
+        var matchedSentences = '';
+
+        // 각 문장에 대해 검색어가 포함되었는지 확인
+        for (var j = 0; j < sentences.length; j++) {
+          var sentence = sentences[j].trim();
+          
+          if (sentence.toUpperCase().indexOf(value) > -1) {
+            // 검색어가 포함된 문장을 저장 (검색어만 강조)
+            matchedSentences += sentence.replace(new RegExp(value, 'gi'), '<span class="highlight">' + value + '</span>') + '<br>';
+          }
+        }
+
+        // 저장된 검색 결과를 보여주기
+        if (matchedSentences !== '') {
+          item[i].style.display = "flex";
+          name.innerHTML = matchedSentences;
+        } else {
+          // 검색어를 찾지 못한 경우 숨기기
+          item[i].style.display = "none";
+          // 강조 효과 제거 및 원래의 문장 표시
+          name.innerHTML = name.dataset.originalText;
+        }
+      }
+    }
+
+    // 초기 로딩 시 각 .item 요소에 원래의 텍스트를 저장
+    document.addEventListener("DOMContentLoaded", function () {
+      var items = document.getElementsByClassName("item");
+      for (var i = 0; i < items.length; i++) {
+        items[i].getElementsByClassName("name")[0].dataset.originalText = items[i].getElementsByClassName("name")[0].innerText;
+      }
+    });
+  </script>
+
+</body>
+</html>
