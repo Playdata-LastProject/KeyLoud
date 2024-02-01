@@ -57,14 +57,15 @@ async function timeStamps(chunks, config) {
 
     try {
       const [response] = await client.recognize(request);
-
+      let nth_bundle = 0;
       for (const result of response.results) {
         for (const wordInfo of result.alternatives[0].words) {
           const startTime =
             wordInfo.startTime.seconds + wordInfo.startTime.nanos / 1e9;
           console.log(wordInfo.word);
-          Timestamps.push(Math.floor(startTime / 10));
+          Timestamps.push(nth_bundle * 60 + Math.floor(startTime / 10));
         }
+        nth_bundle++;
       }
     } catch (error) {
       console.error("에러:", error);
