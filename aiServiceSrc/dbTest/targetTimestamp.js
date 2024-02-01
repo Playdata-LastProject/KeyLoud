@@ -12,20 +12,20 @@ async function targetTimestamp(str, keyword) {
       result.push(i);
       if (i < 3) {
         sentence.push(
-          str2[i] +
-            str2[i + 1] +
-            str2[i + 2] +
-            str2[i + 3] +
-            str2[i + 4] +
+          str2[i] + ' '+
+            str2[i + 1] + ' '+
+            str2[i + 2] + ' '+
+            str2[i + 3] + ' '+
+            str2[i + 4] + ' '+
             str2[i + 5]
         );
       } else {
         sentence.push(
-          str2[i - 3] +
-            str2[i - 2] +
-            str2[i - 1] +
-            str2[i] +
-            str2[i + 1] +
+          str2[i - 3] + ' '+
+            str2[i - 2] + ' '+
+            str2[i - 1] + ' '+
+            str2[i] + ' '+
+            str2[i + 1] + ' '+
             str2[i + 2]
         );
       }
