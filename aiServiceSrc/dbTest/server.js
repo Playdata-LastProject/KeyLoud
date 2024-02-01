@@ -7,6 +7,7 @@ const speech2text = require("./speech2text");
 const keywords = require("./keywords");
 const summary = require("./summary");
 const synonyms = require("./synonyms");
+const targetTimestamp = require("./targetTimestamp");
 
 const app = express();
 
@@ -145,6 +146,31 @@ app.post("/delete", async (req, res) => {
   } catch (error) {
     console.error("Error during document deletion:", error);
     res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+app.get('/search', async (req, res) => {
+  try {
+
+    const collection = db.collection('files');
+
+    const keyword = req.query.keyword;
+    const regex = new RegExp(keyword, 'i'); // 대소문자 구분 없이 검색
+    const resultDictionary  = [];
+    // MongoDB 쿼리를 통해 파일 검색
+    const projection = { _id: 1, filename: 0, content: 0, scripts: 1, summary: 0, keywords: 1, synonyms:0, timestamp:1};
+    const searchResults = await collection.find({ content: { $regex: regex } }, projection).toArray();
+    for (const document of searchResults) {
+      // 각 문서의 _id를 키로 사용하여 targetTimestamp 함수의 결과를 값으로 설정
+      resultDictionary[document._id.toString()] = await targetTimestamp(document.scripts, keyword);
+    }
+
+
+    //프론트에서 id를 key로 해당 키워드 타임스태프 조회
+    res.json(resultDictionary);
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
