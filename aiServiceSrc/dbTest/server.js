@@ -156,16 +156,18 @@ app.get('/search', async (req, res) => {
 
     const keyword = req.query.keyword;
     const regex = new RegExp(keyword, 'i'); // 대소문자 구분 없이 검색
-    const resultDictionary  = [];
+    const resultDictionary  = {};
     // MongoDB 쿼리를 통해 파일 검색
-    const projection = { _id: 1, filename: 0, content: 0, scripts: 1, summary: 0, keywords: 1, synonyms:0, timestamp:1};
-    const searchResults = await collection.find({ content: { $regex: regex } }, projection).toArray();
+    const projection = { _id: 1, filename: 1, content: 0, scripts: 1, summary: 0, keywords: 1, synonyms:0, timestamp:1};
+
+    const searchResults = await collection.find({}, projection).toArray();
     for (const document of searchResults) {
       // 각 문서의 _id를 키로 사용하여 targetTimestamp 함수의 결과를 값으로 설정
-      resultDictionary[document._id.toString()] = await targetTimestamp(document.scripts, keyword);
+      const timestamps = await targetTimestamp(document.scripts, keyword);
+      if (timestamps.length >= 1 ){
+        resultDictionary[document._id.toString()] = timestamps;
+      }
     }
-
-
     //프론트에서 id를 key로 해당 키워드 타임스태프 조회
     res.json(resultDictionary);
   } catch (error) {
