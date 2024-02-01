@@ -67,6 +67,60 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
   }
 });
 
+// Update URL로 요청이 들어왔을 때의 처리
+app.post("/update_scripts", async (req, res) => {
+  try {
+    const collection = conn.db.collection("test");
+
+    // 프론트엔드에서 보낸 새로운 summary 값
+    const newScripts = req.body.newScripts;
+
+    // 특정 문서 조회 및 summary 필드 업데이트
+    const result = await collection.updateOne(
+      { /* 여기에 원하는 조건을 추가하세요 */ },
+      { $set: { scripts: newScripts } }
+    );
+
+    if (result.modifiedCount > 0) {
+      console.log("Scripts updated successfully");
+      res.json({ message: "Scripts updated successfully" });
+    } else {
+      console.log("No document found or no modification needed");
+      res.json({ message: "No document found or no modification needed" });
+    }
+  } catch (error) {
+    console.error("Error during update:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Update URL로 요청이 들어왔을 때의 처리
+app.post("/update_summary", async (req, res) => {
+  try {
+    const collection = conn.db.collection("test");
+
+    // 프론트엔드에서 보낸 새로운 summary 값
+    const newSummary = req.body.newSummary;
+
+    // 특정 문서 조회 및 summary 필드 업데이트
+    const result = await collection.updateOne(
+      { /* 여기에 원하는 조건을 추가하세요 */ },
+      { $set: { summary: newSummary } }
+    );
+
+    if (result.modifiedCount > 0) {
+      console.log("Summary updated successfully");
+      res.json({ message: "Summary updated successfully" });
+    } else {
+      console.log("No document found or no modification needed");
+      res.json({ message: "No document found or no modification needed" });
+    }
+  } catch (error) {
+    console.error("Error during update:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 app.listen(5000, () => {
   console.log("Server started...");
 });
