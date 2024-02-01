@@ -42,6 +42,7 @@ function splitAudio(audioBuffer, chunkSize, sampleRate) {
 
 async function timeStamps(chunks, config) {
   const Timestamps = [];
+  let nth_bundle = 0;
 
   for (const chunk of chunks) {
     const audioBytes = chunk.toString("base64");
@@ -57,19 +58,23 @@ async function timeStamps(chunks, config) {
 
     try {
       const [response] = await client.recognize(request);
-      let nth_bundle = 0;
       for (const result of response.results) {
+        console.log(`----${nth_bundle}-----`);
         for (const wordInfo of result.alternatives[0].words) {
           const startTime =
             wordInfo.startTime.seconds + wordInfo.startTime.nanos / 1e9;
           console.log(wordInfo.word);
+
+          /*if ( startTime / 10 > ) {
+            
+            }*/
           Timestamps.push(nth_bundle * 60 + Math.floor(startTime / 10));
         }
-        nth_bundle++;
       }
     } catch (error) {
       console.error("에러:", error);
     }
+    ++nth_bundle;
   }
 
   return Timestamps;
