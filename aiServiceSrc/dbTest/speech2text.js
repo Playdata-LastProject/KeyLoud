@@ -41,7 +41,7 @@ function splitAudio(audioBuffer, chunkSize, sampleRate) {
 }
 
 async function timeStamps(chunks, config) {
-  const wordsWithTimestamps = [];
+  const Timestamps = [];
 
   for (const chunk of chunks) {
     const audioBytes = chunk.toString("base64");
@@ -62,14 +62,8 @@ async function timeStamps(chunks, config) {
         for (const wordInfo of result.alternatives[0].words) {
           const startTime =
             wordInfo.startTime.seconds + wordInfo.startTime.nanos / 1e9;
-          //const endTime =
-          //  wordInfo.endTime.seconds + wordInfo.endTime.nanos / 1e9;
-          const word = {
-            word: wordInfo.word,
-            startTime: Math.floor(startTime / 10),
-            // endTime: endTime / 10,
-          };
-          wordsWithTimestamps.push(word);
+          console.log(wordInfo.word);
+          Timestamps.push(Math.floor(startTime / 10));
         }
       }
     } catch (error) {
@@ -77,7 +71,7 @@ async function timeStamps(chunks, config) {
     }
   }
 
-  return wordsWithTimestamps;
+  return Timestamps;
 }
 
 async function transcribeAndConcatenate(chunks, config) {
@@ -131,10 +125,11 @@ async function speech2text(audioPath, targetWord) {
   const wordsWithTimestamps = await timeStamps(audioChunks, config);
 
   // 특정 단어의 타임스탬프 찾아서 출력
-  const targetWordTimestamps = wordsWithTimestamps.filter(
-    (word) => word.word.toLowerCase() === targetWord.toLowerCase()
-  );
+  //const targetWordTimestamps = wordsWithTimestamps.filter(
+  //  (word) => word.word.toLowerCase() === targetWord.toLowerCase()
+  //);
 
+  /*
   if (targetWordTimestamps.length > 0) {
     console.log(`"${targetWord}"의 타임스탬프:`);
     for (const timestamp of targetWordTimestamps) {
@@ -144,10 +139,14 @@ async function speech2text(audioPath, targetWord) {
     }
   } else {
     console.log(`오디오에서 "${targetWord}"을(를) 찾을 수 없습니다.`);
-  }
+  }*/
 
   // Transcribe each chunk and concatenate results
-  return await transcribeAndConcatenate(audioChunks, config);
+  console.log(wordsWithTimestamps);
+  return [
+    await transcribeAndConcatenate(audioChunks, config),
+    wordsWithTimestamps,
+  ];
   //console.log("Transcription:", result);
 }
 

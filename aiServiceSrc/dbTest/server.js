@@ -28,10 +28,14 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
 
     const copy_path = "./uploads/" + req.file.originalname;
 
-    const text_result = await speech2text(copy_path, "컴퓨터"); // ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
+    const s2t_result = await speech2text(copy_path);
+
+    const text_result = s2t_result[0]; // ->현재 입력이 경로가 들어가도록 되어있어서 data변환해서 쓰도록 speech2text를 수정해야함
     const summary_result = await summary(text_result);
     const keywords_result = await keywords(text_result);
     const synonyms_result = await synonyms(keywords_result);
+
+    const timestamp_result = s2t_result[1];
 
     // 파일이 업로드된 후의 처리
     const fileDetails = {
@@ -41,7 +45,8 @@ app.post("/upload_files", multer().single("files"), async (req, res) => {
       summary: summary_result,
       keywords: keywords_result,
       synonyms: synonyms_result,
-      // 기타 필요한 파일 정보들 추가 -> erd보고 추가
+      timestamp: timestamp_result,
+      // 기타 필요한 파일 정보들 ..추가 -> erd보고 추가
     };
 
     // MongoDB에 파일 정보 저장
