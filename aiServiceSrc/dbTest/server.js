@@ -127,7 +127,7 @@ app.post("/update_summary", async (req, res) => {
   }
 });
 
-app.post("/delete", async (req, res) => {
+app.delete("/delete_files", async (req, res) => {
   try {
 
     // 클라이언트에서 전송된 요청 본문에서 삭제할 문서의 _id 값 가져오기
@@ -152,7 +152,7 @@ app.post("/delete", async (req, res) => {
 app.get('/search', async (req, res) => {
   try {
 
-    const collection = db.collection('files');
+    const collection = conn.db.collection('test');
 
     const keyword = req.query.keyword;
     const regex = new RegExp(keyword, 'i'); // 대소문자 구분 없이 검색
@@ -179,3 +179,4 @@ app.get('/search', async (req, res) => {
 app.listen(5000, () => {
   console.log("Server started...");
 });
+z
