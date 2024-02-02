@@ -83,7 +83,9 @@ app.post("/update_scripts", async (req, res) => {
 
     // 특정 문서 조회 및 summary 필드 업데이트
     const result = await collection.updateOne(
-      { /* 여기에 원하는 조건을 추가하세요 */ },
+      {
+        /* 여기에 원하는 조건을 추가하세요 */
+      },
       { $set: { scripts: newScripts } }
     );
 
@@ -110,7 +112,9 @@ app.post("/update_summary", async (req, res) => {
 
     // 특정 문서 조회 및 summary 필드 업데이트
     const result = await collection.updateOne(
-      { /* 여기에 원하는 조건을 추가하세요 */ },
+      {
+        /* 여기에 원하는 조건을 추가하세요 */
+      },
       { $set: { summary: newSummary } }
     );
 
@@ -129,50 +133,69 @@ app.post("/update_summary", async (req, res) => {
 
 app.delete("/delete_files", async (req, res) => {
   try {
-
     // 클라이언트에서 전송된 요청 본문에서 삭제할 문서의 _id 값 가져오기
     const documentId = req.body.documentId; // 클라이언트에서 요청 시 실제 _id 값이 담긴 필드명에 맞게 수정
 
     // id로 조회하여 문서 삭제
-    const result = await db.collection('test').deleteOne({ _id: new ObjectID(documentId) });
+    const result = await db
+      .collection("test")
+      .deleteOne({ _id: new ObjectID(documentId) });
 
     if (result.deletedCount === 1) {
-      res.status(200).json({ message: '문서가 성공적으로 삭제되었습니다.' });
+      res.status(200).json({ message: "문서가 성공적으로 삭제되었습니다." });
     } else {
-      res.status(404).json({ message: '삭제할 문서를 찾지 못했거나 삭제 중 오류가 발생했습니다.' });
+      res
+        .status(404)
+        .json({
+          message: "삭제할 문서를 찾지 못했거나 삭제 중 오류가 발생했습니다.",
+        });
     }
 
     client.close();
   } catch (error) {
     console.error("Error during document deletion:", error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-app.get('/search', async (req, res) => {
+app.get("/search", async (req, res) => {
   try {
 
     const collection = conn.db.collection('test');
 
+
     const keyword = req.query.keyword;
-    const regex = new RegExp(keyword, 'i'); // 대소문자 구분 없이 검색
-    const resultDictionary  = {};
+    const regex = new RegExp(keyword, "i"); // 대소문자 구분 없이 검색
+    const resultDictionary = [];
     // MongoDB 쿼리를 통해 파일 검색
-    const projection = { _id: 1, filename: 1, content: 0, scripts: 1, summary: 0, keywords: 1, synonyms:0, timestamp:1};
+    const projection = {
+      _id: 1,
+      filename: 1,
+      content: 0,
+      scripts: 1,
+      summary: 0,
+      keywords: 1,
+      synonyms: 0,
+      timestamp: 1,
+    };
 
     const searchResults = await collection.find({}, projection).toArray();
     for (const document of searchResults) {
       // 각 문서의 _id를 키로 사용하여 targetTimestamp 함수의 결과를 값으로 설정
       const timestamps = await targetTimestamp(document.scripts, keyword);
-      if (timestamps.length >= 1 ){
-        resultDictionary[document._id.toString()] = timestamps;
+      if (timestamps["index"].length > 0) {
+        timestamps["_id"] = document._id.toString();
+        timestamps["filename"] = document.filename.toString();
+        timestamps["keywords"] = document.keywords;
+        timestamps["timestamp"] = document.timestamp;
+        resultDictionary[document._id] = timestamps;
       }
     }
     //프론트에서 id를 key로 해당 키워드 타임스태프 조회
     res.json(resultDictionary);
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error connecting to MongoDB:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
